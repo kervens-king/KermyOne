@@ -14,7 +14,7 @@
 
 # `Owner`
 
- <a href="https://github.com/username"><img src="https://github.com/username.png" width="250" height="250" alt="PATERSON MD"/></a>
+ <a href="https://github.com/username"><img src="https://github.com/username.png" width="250" height="250" alt="PATERSON-MD"/></a>
 
 
    
