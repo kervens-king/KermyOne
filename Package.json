@@ -20,22 +20,22 @@
   "keywords": [
     "whatsapp",
     "bot",
-    "telegram", 
+    "telegram",
     "paterson-md",
     "automation",
     "whatsapp-bot",
     "telegram-bot"
   ],
-  "author": "Kervens Aubourg <support@paterson-md.com>",
+  "author": "Kervens Aubourg",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/votre-username/paterson-md-telegram.git"
+    "url": "https://github.com/PATERSON-MD/paterson-telegram-bot.git"
   },
   "bugs": {
-    "url": "https://github.com/votre-username/paterson-md-telegram/issues"
+    "url": "https://github.com/PATERSON-MD/paterson-telegram-bot/issues"
   },
-  "homepage": "https://github.com/votre-username/paterson-md-telegram#readme",
+  "homepage": "https://github.com/PATERSON-MD/paterson-telegram-bot#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
