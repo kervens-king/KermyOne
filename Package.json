@@ -1,0 +1,23 @@
+{
+  "name": "paterson-telegram-bot",
+  "version": "3.6.0",
+  "description": "Bot Telegram officiel PATERSON-MD",
+  "main": "telegram-bot.js",
+  "scripts": {
+    "start": "node telegram-bot.js",
+    "dev": "nodemon telegram-bot.js"
+  },
+  "dependencies": {
+    "telegraf": "^4.12.2",
+    "express": "^4.18.2",
+    "axios": "^1.5.0"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "telegram",
+    "paterson-md"
+  ],
+  "author": "Kervens Aubourg",
+  "license": "MIT"
+}
