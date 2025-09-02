@@ -1,23 +1,43 @@
 {
   "name": "paterson-telegram-bot",
   "version": "3.6.0",
-  "description": "Bot Telegram officiel PATERSON-MD",
+  "description": "Bot Telegram officiel PATERSON-MD avec compteur d'utilisateurs mensuels",
   "main": "telegram-bot.js",
   "scripts": {
     "start": "node telegram-bot.js",
-    "dev": "nodemon telegram-bot.js"
+    "dev": "nodemon telegram-bot.js",
+    "build": "npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "telegraf": "^4.12.2",
     "express": "^4.18.2",
     "axios": "^1.5.0"
   },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
   "keywords": [
     "whatsapp",
     "bot",
-    "telegram",
-    "paterson-md"
+    "telegram", 
+    "paterson-md",
+    "automation",
+    "whatsapp-bot",
+    "telegram-bot"
   ],
-  "author": "Kervens Aubourg",
-  "license": "MIT"
+  "author": "Kervens Aubourg <support@paterson-md.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/votre-username/paterson-md-telegram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/votre-username/paterson-md-telegram/issues"
+  },
+  "homepage": "https://github.com/votre-username/paterson-md-telegram#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
 }
