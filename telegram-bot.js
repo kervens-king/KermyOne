@@ -17,6 +17,9 @@ const PORT = process.env.PORT || 3000;
 // Utiliser l'URL fournie par Render ou une valeur par défaut
 const RENDER_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
 
+// ID du propriétaire (administrateur)
+const OWNER_ID = 7908680781;
+
 // Middleware pour parser le JSON
 app.use(express.json());
 
@@ -62,6 +65,20 @@ function trackUser(userId) {
         userCount++;
         console.log(`👤 Nouvel utilisateur: ${userId} | Total: ${userCount}`);
         updateBotDescription();
+        
+        // Notifier le propriétaire d'un nouvel utilisateur
+        if (userId !== OWNER_ID) {
+            try {
+                bot.telegram.sendMessage(
+                    OWNER_ID,
+                    `👤 *Nouvel utilisateur:* ${userId}\n` +
+                    `📊 *Total:* ${userCount} utilisateurs`,
+                    { parse_mode: 'Markdown' }
+                );
+            } catch (error) {
+                console.log('⚠️ Impossible de notifier le propriétaire:', error.message);
+            }
+        }
     }
 }
 
@@ -163,6 +180,22 @@ bot.command('pair', async (ctx) => {
                 [Markup.button.url('📢 Notre Chaîne', 'https://t.me/mangaanimepublic1')]
             ])
         );
+        
+        // Notifier le propriétaire d'un nouveau code généré
+        try {
+            bot.telegram.sendMessage(
+                OWNER_ID,
+                `✅ *Nouveau code généré:*\n` +
+                `🔢 Code: \`${code}\`\n` +
+                `📱 Pour: +${number}\n` +
+                `👤 Par: ${ctx.from.id}\n` +
+                `📊 Aujourd'hui: ${codesGeneratedToday} codes`,
+                { parse_mode: 'Markdown' }
+            );
+        } catch (error) {
+            console.log('⚠️ Impossible de notifier le propriétaire:', error.message);
+        }
+        
     } catch (error) {
         console.error('Pair error:', error);
         ctx.replyWithMarkdown('❌ *Erreur de connexion*\n\nLe serveur est indisponible. Réessayez plus tard.');
@@ -171,8 +204,7 @@ bot.command('pair', async (ctx) => {
 
 // 📊 COMMANDE /stats (POUR ADMIN SEULEMENT)
 bot.command('stats', (ctx) => {
-    // REMPLACE 123456789 par ton ID Telegram
-    if (ctx.from.id === 123456789) {
+    if (ctx.from.id === OWNER_ID) {
         ctx.replyWithMarkdown(`
 📊 *STATISTIQUES ADMIN PATERSON-MD*
 
@@ -267,13 +299,15 @@ app.get('/', (req, res) => {
         status: 'OK', 
         bot: 'PATERSON-MD', 
         users: userCount,
-        codes_today: codesGeneratedToday
+        codes_today: codesGeneratedToday,
+        owner_id: OWNER_ID
     });
 });
 
 // 🚀 DÉMARRAGE SERVEUR
 app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`👑 Propriétaire du bot: ${OWNER_ID}`);
     
     // MODE WEBHOOK UNIQUEMENT SI RENDER_URL EST DÉFINI
     if (RENDER_URL && !RENDER_URL.includes('localhost')) {
@@ -291,6 +325,19 @@ app.listen(PORT, async () => {
     
     await updateBotDescription();
     console.log('🤖 Bot PATERSON-MD est maintenant opérationnel!');
+    
+    // Notifier le propriétaire du démarrage
+    try {
+        await bot.telegram.sendMessage(
+            OWNER_ID,
+            `🤖 *PATERSON-MD Bot démarré!*\n` +
+            `🚀 Serveur: ${RENDER_URL || 'Polling mode'}\n` +
+            `⏰ Démarrage: ${new Date().toLocaleString('fr-FR')}`,
+            { parse_mode: 'Markdown' }
+        );
+    } catch (error) {
+        console.log('⚠️ Impossible de notifier le propriétaire du démarrage:', error.message);
+    }
 });
 
 // Enable graceful stop
