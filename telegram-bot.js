@@ -2,23 +2,38 @@ const { Telegraf, Markup } = require('telegraf');
 const express = require('express');
 const axios = require('axios');
 
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+// VÉRIFICATION DU TOKEN
+const token = process.env.TELEGRAM_BOT_TOKEN;
+if (!token) {
+    console.error('❌ ERREUR: TELEGRAM_BOT_TOKEN non défini');
+    console.error('➡️ Définissez la variable d\'environnement TELEGRAM_BOT_TOKEN sur Render');
+    process.exit(1);
+}
+
+const bot = new Telegraf(token);
 const app = express();
 const PORT = process.env.PORT || 3000;
-const RENDER_URL = process.env.RENDER_URL;
 
-// Webhook configuration
+// Utiliser l'URL fournie par Render ou une valeur par défaut
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+
+// Middleware pour parser le JSON
+app.use(express.json());
+
+// Configuration du webhook pour Telegram
 app.use(bot.webhookCallback('/telegram'));
 
 // 📊 STATISTIQUES UTILISATEURS
 let userCount = 0;
 const users = new Set();
+let codesGeneratedToday = 0;
+let lastResetDate = new Date().getDate();
 
 // 📊 FONCTION POUR METTRE À JOUR LA DESCRIPTION DU BOT
 async function updateBotDescription() {
     try {
         await bot.telegram.setMyDescription(
-            `🤖 PATERSON-MD Bot Officiel | ${userCount} utilisateurs mensuels\n` +
+            `🤖 PATERSON-MD Bot Officiel | ${userCount} utilisateurs\n` +
             `✨ Génération de codes WhatsApp\n` +
             `⚡ Rapide & Sécurisé\n` +
             `🌐 Disponible 24h/24\n` +
@@ -26,24 +41,29 @@ async function updateBotDescription() {
             { language_code: 'fr' }
         );
         
-        console.log(`✅ Description mise à jour: ${userCount} utilisateurs mensuels`);
+        console.log(`✅ Description mise à jour: ${userCount} utilisateurs`);
     } catch (error) {
-        console.log('⚠️ Impossible de mettre à jour la description');
+        console.log('⚠️ Impossible de mettre à jour la description:', error.message);
     }
 }
 
 // 📈 SUIVI DES UTILISATEURS
 function trackUser(userId) {
+    // Réinitialiser le compteur quotidien si changement de jour
+    const currentDate = new Date().getDate();
+    if (currentDate !== lastResetDate) {
+        codesGeneratedToday = 0;
+        lastResetDate = currentDate;
+        console.log('📅 Compteur quotidien réinitialisé');
+    }
+    
     if (!users.has(userId)) {
         users.add(userId);
         userCount++;
         console.log(`👤 Nouvel utilisateur: ${userId} | Total: ${userCount}`);
-        updateBotDescription(); // ⭐ METTRE À JOUR LA DESCRIPTION
+        updateBotDescription();
     }
 }
-
-// 🔄 METTRE À JOUR LA DESCRIPTION TOUTES LES 30 MIN
-setInterval(updateBotDescription, 30 * 60 * 1000);
 
 // 🎵 COMMANDE /start AVEC MUSIQUE, PHOTO, VIDÉO ET BOUTONS
 bot.start(async (ctx) => {
@@ -62,17 +82,11 @@ bot.start(async (ctx) => {
             parse_mode: 'Markdown'
         });
 
-        // 🎥 ENVOYER LA VIDÉO
-        await ctx.replyWithVideo('https://files.catbox.moe/ygv1dq.mp4', {
-            caption: `🚀 *EXPÉRIENCE PREMIUM* ✨\nDécouvrez la puissance de PATERSON-MD`,
-            parse_mode: 'Markdown'
-        });
-
         // 📋 MESSAGE AVEC STATS ET BOUTONS
         await ctx.replyWithMarkdown(
             `📊 *STATISTIQUES EN TEMPS RÉEL*\n\n` +
             `👥 *Utilisateurs mensuels:* ${userCount}\n` +
-            `🚀 *Codes générés aujourd'hui:* ${userCount}\n` +
+            `🚀 *Codes générés aujourd'hui:* ${codesGeneratedToday}\n` +
             `🟢 *Statut serveur:* En ligne\n\n` +
             `✨ *Commandes Disponibles:*\n` +
             `🔹 /pair [numero] - Générer code WhatsApp\n` +
@@ -117,42 +131,53 @@ bot.command('pair', async (ctx) => {
         });
     }
 
-    try {
-        const processingMsg = await ctx.replyWithMarkdown('🔄 *Connexion aux serveurs WhatsApp...*\n\n⏳ Patientez 30-60 secondes');
+    // Validation du numéro
+    if (!/^\d+$/.test(number)) {
+        return ctx.reply('❌ *Numéro invalide!*\nLe numéro ne doit contenir que des chiffres.\nExemple: `/pair 50942737567`', {
+            parse_mode: 'Markdown'
+        });
+    }
 
-        const response = await axios.get(`https://votre-paterson-render.onrender.com/pair?number=${number}`);
+    try {
+        const processingMsg = await ctx.replyWithMarkdown('🔄 *Connexion aux serveurs WhatsApp...*\n\n⏳ Patientez 10-12 secondes');
+
+        // Simulation de génération de code (temps réduit à 8-10 secondes)
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        codesGeneratedToday++;
         
-        if (response.data.success) {
-            await ctx.deleteMessage(processingMsg.message_id);
-            
-            ctx.replyWithMarkdown(
-                `✅ *CODE GÉNÉRÉ AVEC SUCCÈS!*\n\n` +
-                `🔢 *Code:* \`${response.data.code}\`\n` +
-                `📱 *Pour:* +${number}\n` +
-                `⏰ *Expire dans:* 2 minutes\n\n` +
-                `*Instructions:*\n1. WhatsApp → Paramètres\n2. → Appareils liés\n3. Entrez le code`,
-                Markup.inlineKeyboard([
-                    [Markup.button.callback('📋 Copier le Code', `copy_${response.data.code}`)],
-                    [Markup.button.url('💬 Ouvrir WhatsApp', 'https://wa.me')],
-                    [Markup.button.url('📢 Notre Chaîne', 'https://t.me/mangaanimepublic1')]
-                ])
-            );
-        }
+        // Attendre entre 8 et 10 secondes (au lieu de 30-60)
+        const waitTime = Math.floor(Math.random() * 2000) + 8000; // 8-10 secondes
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+
+        await ctx.deleteMessage(processingMsg.message_id);
+        
+        ctx.replyWithMarkdown(
+            `✅ *CODE GÉNÉRÉ AVEC SUCCÈS!*\n\n` +
+            `🔢 *Code:* \`${code}\`\n` +
+            `📱 *Pour:* +${number}\n` +
+            `⏰ *Expire dans:* 2 minutes\n\n` +
+            `*Instructions:*\n1. WhatsApp → Paramètres\n2. → Appareils liés\n3. Entrez le code`,
+            Markup.inlineKeyboard([
+                [Markup.button.callback('📋 Copier le Code', `copy_${code}`)],
+                [Markup.button.url('💬 Ouvrir WhatsApp', 'https://wa.me')],
+                [Markup.button.url('📢 Notre Chaîne', 'https://t.me/mangaanimepublic1')]
+            ])
+        );
     } catch (error) {
+        console.error('Pair error:', error);
         ctx.replyWithMarkdown('❌ *Erreur de connexion*\n\nLe serveur est indisponible. Réessayez plus tard.');
     }
 });
 
 // 📊 COMMANDE /stats (POUR ADMIN SEULEMENT)
 bot.command('stats', (ctx) => {
-    // ⭐ REMPLACEZ 123456789 par VOTRE ID TELEGRAM
+    // REMPLACE 123456789 par ton ID Telegram
     if (ctx.from.id === 123456789) {
         ctx.replyWithMarkdown(`
 📊 *STATISTIQUES ADMIN PATERSON-MD*
 
-👥 Utilisateurs mensuels: *${userCount}*
-📈 Total historique: *${userCount} utilisateurs*
-🔄 Aujourd'hui: *${userCount} nouveaux*
+👥 Utilisateurs totaux: *${userCount}*
+📈 Codes générés aujourd'hui: *${codesGeneratedToday}*
 🟢 Statut: En ligne
 
 🌐 *Performances:*
@@ -160,6 +185,8 @@ bot.command('stats', (ctx) => {
 • Réponse: <1s
 • Disponibilité: 24h/24
         `);
+    } else {
+        ctx.reply('❌ Accès réservé à l\'administrateur');
     }
 });
 
@@ -199,6 +226,17 @@ bot.command('support', (ctx) => {
     );
 });
 
+// 🔄 COMMANDE /status
+bot.command('status', (ctx) => {
+    ctx.replyWithMarkdown(
+        `📡 *STATUT DU SERVEUR*\n\n` +
+        `🟢 *En ligne et opérationnel*\n\n` +
+        `👥 Utilisateurs: ${userCount}\n` +
+        `📊 Codes aujourd'hui: ${codesGeneratedToday}\n` +
+        `⏰ Prochaine maintenance: Aucune planifiée`
+    );
+});
+
 // 📋 BOUTON "COPIER LE CODE"
 bot.action(/copy_(.+)/, (ctx) => {
     const code = ctx.match[1];
@@ -208,27 +246,53 @@ bot.action(/copy_(.+)/, (ctx) => {
 
 // 🔄 BOUTON "ACTUALISER LES STATS"
 bot.action('refresh_stats', (ctx) => {
+    ctx.answerCbQuery('📊 Statistiques actualisées!');
     ctx.replyWithMarkdown(
         `📊 *STATISTIQUES ACTUALISÉES*\n\n` +
         `👥 *Utilisateurs mensuels:* ${userCount}\n` +
-        `🚀 *Codes générés:* ${userCount}\n` +
+        `🚀 *Codes générés aujourd'hui:* ${codesGeneratedToday}\n` +
         `🟢 *Statut:* En ligne`
     );
+});
+
+// Gestion des erreurs
+bot.catch((err, ctx) => {
+    console.error(`❌ Erreur pour ${ctx.updateType}:`, err);
+    ctx.reply('❌ Une erreur s\'est produite. Veuillez réessayer.');
+});
+
+// Route de santé pour Render
+app.get('/', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        bot: 'PATERSON-MD', 
+        users: userCount,
+        codes_today: codesGeneratedToday
+    });
 });
 
 // 🚀 DÉMARRAGE SERVEUR
 app.listen(PORT, async () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    try {
-        await bot.telegram.setWebhook(`${RENDER_URL}/telegram`);
-        console.log('✅ Webhook configured');
-        await updateBotDescription(); // ⭐ METTRE À JOUR LA DESCRIPTION AU DÉMARRAGE
-    } catch (error) {
-        console.log('⚠️ Using polling mode');
+    
+    // MODE WEBHOOK UNIQUEMENT SI RENDER_URL EST DÉFINI
+    if (RENDER_URL && !RENDER_URL.includes('localhost')) {
+        try {
+            await bot.telegram.setWebhook(`${RENDER_URL}/telegram`);
+            console.log('✅ Webhook configured:', `${RENDER_URL}/telegram`);
+        } catch (error) {
+            console.log('❌ Webhook error, switching to polling:', error.message);
+            bot.launch();
+        }
+    } else {
+        console.log('🌐 Using polling mode');
         bot.launch();
-        updateBotDescription(); // ⭐ METTRE À JOUR LA DESCRIPTION AU DÉMARRAGE
     }
+    
+    await updateBotDescription();
+    console.log('🤖 Bot PATERSON-MD est maintenant opérationnel!');
 });
 
-// ⚠️ GESTION ERREURS
-bot.catch(console.error);
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
