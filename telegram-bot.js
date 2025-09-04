@@ -6,48 +6,74 @@ class TelegramAIBot {
     constructor() {
         this.bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
         this.deepseekApiKey = process.env.DEEPSEEK_API_KEY;
-        this.conversations = new Map(); // Pour stocker l'historique des conversations
+        this.conversations = new Map();
+        this.creator = "Kervens King";
         this.setupHandlers();
     }
 
-    // Configuration des gestionnaires de messages
     setupHandlers() {
         // Commande de démarrage
         this.bot.start((ctx) => {
-            ctx.reply('🤖 Bonjour ! Je suis votre assistant IA powered by DeepSeek.\n\n'
-                + 'Envoyez-moi un message et je vous répondrai !\n\n'
-                + 'Commandes disponibles:\n'
-                + '/start - Démarrer le bot\n'
-                + '/help - Afficher l\'aide\n'
-                + '/clear - Effacer l\'historique de conversation\n'
-                + '/info - Informations sur le bot');
+            ctx.reply(`🤖 Bonjour ! Je suis un assistant IA créé par **${this.creator}**.\n\n`
+                + '✨ *Fonctionnalités:*\n'
+                + '• Réponses précises et concises\n'
+                + '• Historique de conversation intelligent\n'
+                + '• Support Markdown\n'
+                + '• Basé sur DeepSeek AI\n\n'
+                + 'Envoyez-moi un message pour commencer !', 
+                { parse_mode: 'Markdown' }
+            );
         });
 
         // Commande d'aide
         this.bot.help((ctx) => {
-            ctx.reply('💡 Comment utiliser ce bot:\n\n'
-                + '• Envoyez simplement un message et je répondrai\n'
-                + '• Je maintiens le contexte de notre conversation\n'
-                + '• Utilisez /clear pour effacer l\'historique\n'
-                + '• Je suis basé sur DeepSeek AI\n\n'
-                + 'Posez-moi n\'importe quelle question !');
+            ctx.reply(`💡 *Aide - Bot IA par ${this.creator}*\n\n`
+                + '📝 *Utilisation:*\n'
+                + '• Écrivez simplement votre question\n'
+                + '• Je maintiens le contexte de la conversation\n'
+                + '• Réponses précises et techniques\n\n'
+                + '⚡ *Commandes:*\n'
+                + '/start - Démarrer le bot\n'
+                + '/help - Afficher cette aide\n'
+                + '/clear - Effacer l\'historique\n'
+                + '/info - Informations techniques\n'
+                + '/creator - À propos du créateur',
+                { parse_mode: 'Markdown' }
+            );
         });
 
         // Commande pour effacer l'historique
         this.bot.command('clear', (ctx) => {
             const chatId = ctx.chat.id;
             this.conversations.delete(chatId);
-            ctx.reply('🗑️ Historique de conversation effacé !');
+            ctx.reply('✅ *Historique de conversation effacé avec succès!*', 
+                { parse_mode: 'Markdown' }
+            );
         });
 
         // Commande info
         this.bot.command('info', (ctx) => {
-            ctx.reply('🤖 Telegram AI Bot\n\n'
-                + '• Powered by DeepSeek AI\n'
-                + '• Développé avec Node.js\n'
-                + '• Mainient le contexte des conversations\n'
-                + '• Supporte le markdown\n\n'
-                + 'Version: 1.0.0');
+            ctx.reply(`🤖 *Informations Techniques*\n\n`
+                + `• *Créateur:* ${this.creator}\n`
+                + '• *IA:* DeepSeek Chat\n'
+                + '• *Plateforme:* Node.js + Telegraf\n'
+                + '• *Version:* 2.0.0\n'
+                + '• *Précision:* Mode technique activé\n\n'
+                + '⚡ _Optimisé pour des réponses exactes et concises_',
+                { parse_mode: 'Markdown' }
+            );
+        });
+
+        // Commande créateur
+        this.bot.command('creator', (ctx) => {
+            ctx.reply(`🎯 *À propos du Créateur*\n\n`
+                + `• *Nom:* ${this.creator}\n`
+                + '• *Rôle:* Développeur Full-Stack\n'
+                + '• *Spécialité:* IA et Automatisation\n'
+                + '• *Philosophie:* Précision et efficacité\n\n'
+                + '💡 _Ce bot reflète l\'approche technique et précise de son créateur_',
+                { parse_mode: 'Markdown' }
+            );
         });
 
         // Gestionnaire pour tous les messages texte
@@ -55,39 +81,35 @@ class TelegramAIBot {
             try {
                 const message = ctx.message.text;
                 const chatId = ctx.chat.id;
-                const userId = ctx.from.id;
 
-                // Afficher "typing..."
+                // Ignorer les commandes déjà traitées
+                if (message.startsWith('/')) return;
+
                 await ctx.sendChatAction('typing');
 
-                // Récupérer ou créer l'historique de conversation
                 if (!this.conversations.has(chatId)) {
                     this.conversations.set(chatId, []);
                 }
 
                 const conversationHistory = this.conversations.get(chatId);
 
-                // Ajouter le message de l'utilisateur à l'historique
                 conversationHistory.push({
                     role: 'user',
                     content: message
                 });
 
-                // Limiter l'historique à 10 messages pour éviter les tokens excessifs
-                if (conversationHistory.length > 10) {
-                    conversationHistory.splice(0, conversationHistory.length - 10);
+                // Limiter l'historique pour maintenir la précision
+                if (conversationHistory.length > 8) {
+                    conversationHistory.splice(0, conversationHistory.length - 8);
                 }
 
-                // Obtenir la réponse de DeepSeek
                 const aiResponse = await this.getDeepSeekResponse(conversationHistory);
 
-                // Ajouter la réponse de l'IA à l'historique
                 conversationHistory.push({
                     role: 'assistant',
                     content: aiResponse
                 });
 
-                // Envoyer la réponse formatée
                 await ctx.reply(aiResponse, {
                     parse_mode: 'Markdown',
                     reply_to_message_id: ctx.message.message_id
@@ -95,17 +117,22 @@ class TelegramAIBot {
 
             } catch (error) {
                 console.error('Erreur:', error);
-                ctx.reply('❌ Désolé, une erreur s\'est produite. Veuillez réessayer.');
+                ctx.reply('❌ *Erreur de traitement* - Veuillez réessayer.', 
+                    { parse_mode: 'Markdown' }
+                );
             }
         });
 
-        // Gestionnaire pour les messages autres que texte
+        // Gestionnaire pour autres types de messages
         this.bot.on('message', (ctx) => {
-            ctx.reply('📝 Je ne peux traiter que les messages texte pour le moment.');
+            if (ctx.message.text && !ctx.message.text.startsWith('/')) return;
+            ctx.reply('📝 *Je traite uniquement les messages texte pour une précision optimale.*', 
+                { parse_mode: 'Markdown' }
+            );
         });
     }
 
-    // Méthode pour interagir avec l'API DeepSeek
+    // Méthode pour interagir avec DeepSeek avec configuration de précision
     async getDeepSeekResponse(messages) {
         try {
             const response = await axios.post(
@@ -115,14 +142,25 @@ class TelegramAIBot {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Vous êtes un assistant IA utile, friendly et professionnel. '
-                                + 'Répondez en français de manière claire et concise. '
-                                + 'Utilisez le markdown pour formater vos réponses quand c\'est approprié.'
+                            content: 'Vous êtes un assistant technique extrêmement précis et concis. '
+                                + 'CRÉATEUR: Kervens King - Développeur Full-Stack\n\n'
+                                + 'DIRECTIVES STRICTES:\n'
+                                + '1. Réponses techniques et exactes\n'
+                                + '2. Concision et précision avant tout\n'
+                                + '3. Utilisation de markdown pour la clarté\n'
+                                + '4. Éviter les phrases inutiles\n'
+                                + '5. Privilégier les faits vérifiables\n'
+                                + '6. Structure logique et organisée\n'
+                                + '7. Ton professionnel et technique\n\n'
+                                + 'Répondez toujours en français sauf demande contraire.'
                         },
                         ...messages
                     ],
-                    temperature: 0.7,
-                    max_tokens: 2000,
+                    temperature: 0.3, // Température basse pour plus de précision
+                    max_tokens: 1500,
+                    top_p: 0.9,
+                    frequency_penalty: 0.2,
+                    presence_penalty: 0.1,
                     stream: false
                 },
                 {
@@ -130,47 +168,57 @@ class TelegramAIBot {
                         'Authorization': `Bearer ${this.deepseekApiKey}`,
                         'Content-Type': 'application/json'
                     },
-                    timeout: 30000 // 30 secondes timeout
+                    timeout: 25000
                 }
             );
 
             return response.data.choices[0].message.content;
+
         } catch (error) {
-            console.error('Erreur DeepSeek API:', error.response?.data || error.message);
-            throw new Error('Erreur de communication avec l\'IA');
+            console.error('Erreur DeepSeek:', error.response?.data || error.message);
+            throw new Error('Impossible de contacter le service IA pour le moment');
         }
     }
 
-    // Gestion des erreurs
     setupErrorHandling() {
         this.bot.catch((error, ctx) => {
-            console.error('Erreur du bot:', error);
-            ctx.reply('❌ Une erreur interne s\'est produite. Veuillez réessayer.');
+            console.error('Erreur bot:', error);
+            ctx.reply('⚡ *Erreur système* - Veuillez contacter le support technique.', 
+                { parse_mode: 'Markdown' }
+            );
         });
     }
 
-    // Démarrer le bot
     start() {
         this.setupErrorHandling();
+        
         this.bot.launch().then(() => {
-            console.log('🤖 Bot Telegram AI démarré avec succès!');
+            console.log(`🤖 Bot IA de ${this.creator} démarré avec succès!`);
+            console.log('⚡ Mode: Précision technique activée');
         });
 
-        // Gestion propre de l'arrêt
-        process.once('SIGINT', () => this.bot.stop('SIGINT'));
-        process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
+        // Arrêt propre
+        process.once('SIGINT', () => {
+            console.log('🛑 Arrêt du bot...');
+            this.bot.stop('SIGINT');
+        });
+        
+        process.once('SIGTERM', () => {
+            console.log('🛑 Arrêt du bot...');
+            this.bot.stop('SIGTERM');
+        });
     }
 }
 
-// Initialisation et démarrage du bot
+// Initialisation
 const initializeBot = () => {
     if (!process.env.TELEGRAM_BOT_TOKEN) {
-        console.error('❌ TELEGRAM_BOT_TOKEN manquant dans les variables d\'environnement');
+        console.error('❌ TELEGRAM_BOT_TOKEN manquant');
         process.exit(1);
     }
 
     if (!process.env.DEEPSEEK_API_KEY) {
-        console.error('❌ DEEPSEEK_API_KEY manquant dans les variables d\'environnement');
+        console.error('❌ DEEPSEEK_API_KEY manquant');
         process.exit(1);
     }
 
@@ -180,7 +228,8 @@ const initializeBot = () => {
 
 module.exports = { TelegramAIBot, initializeBot };
 
-// Si le fichier est exécuté directement
+// Exécution directe
 if (require.main === module) {
+    console.log('🚀 Démarrage du bot IA par Kervens King...');
     initializeBot();
 }
