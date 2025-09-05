@@ -1,6 +1,2 @@
-{
-  "name": "paterson-telegram-bot",
-  "version": "3.6.0",
-  "description": "Bot Telegram officiel PATERSON-MD avec compteur d'utilisateurs mensuels",
 python-telegram-bot==20.7
 requests
