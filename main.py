@@ -5,12 +5,18 @@ import requests
 import json
 
 # -- CONFIGURATION : Récupère les secrets --
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
-DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '').strip()
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
+# Vérification simple au démarrage
+if not TELEGRAM_BOT_TOKEN:
+    print("⚠️  ATTENTION: TELEGRAM_BOT_TOKEN non défini!")
+if not DEEPSEEK_API_KEY:
+    print("⚠️  ATTENTION: DEEPSEEK_API_KEY non définie!")
+
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('🤖 Salut ! Je suis une IA créée par *Kervens King*. Pose-moi n\'importe quelle question, je suis là pour t\'aider ! 🚀')
+    await update.message.reply_text('🤖 Salut ! Je suis une IA créée par **Kervens King**. Pose-moi n\'importe quelle question, je suis là pour t\'aider ! 🚀')
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_text = """
@@ -73,17 +79,23 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("😵 Oups! Une erreur inattendue s'est produite. Mon créateur, Kervens King, en a été informé!")
 
 if __name__ == '__main__':
-    if not TELEGRAM_BOT_TOKEN:
-        raise ValueError("Token Telegram manquant!")
-    if not DEEPSEEK_API_KEY:
-        raise ValueError("Clé DeepSeek manquante!")
+    print('⚡ Démarrage du bot Kervens King AI...')
     
-    print('Démarrage du bot Kervens King AI...')
+    # Créer l'application Telegram
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
-    application.add_handler(CommandHandler("start", start_command))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("creator", creator_command))
+
+    # Gérer les commandes
+    application.add_handler(CommandHandler('start', start_command))
+    application.add_handler(CommandHandler('help', help_command))
+    application.add_handler(CommandHandler('creator', creator_command))
+    
+    # Gérer tous les messages textuels
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    # Gérer les erreurs
     application.add_error_handler(error_handler)
+
     print('✅ Le bot écoute maintenant... Prêt à répondre au nom de Kervens King!')
+    
+    # Lancer le bot
     application.run_polling()
