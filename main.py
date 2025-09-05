@@ -5,8 +5,8 @@ import requests
 import json
 
 # -- CONFIGURATION : Récupère les secrets --
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
-DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY')
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip()
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '').strip()
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
