@@ -323,6 +323,42 @@ musicBtn.addEventListener('click', ()=>{
 });
 </script>
 </body>
+  </html>    cell.classList.add('placed');
+      let winner = checkWinner();
+      if(winner){ endGame(winner); return; }
+      aiMove();
+      winner = checkWinner();
+      if(winner) endGame(winner);
+      else status.textContent = "Tour de X";
+    }
+  });
+});
+
+restartBtn.addEventListener('click', ()=>{
+  board.fill('');
+  cells.forEach(c=>{c.textContent=''; c.classList.remove('placed');});
+  gameOver=false;
+  status.textContent = "Tour de X";
+});
+
+difficultySelect.addEventListener('change', ()=>{
+  difficulty = difficultySelect.value;
+});
+
+function endGame(winner){
+  gameOver=true;
+  status.textContent = winner==='Tie'?"Égalité !": winner+" a gagné !";
+}
+
+// Musique
+const musicBtn = document.getElementById('musicBtn');
+const bgMusic = document.getElementById('bgMusic');
+musicBtn.addEventListener('click', ()=>{
+  if(bgMusic.paused){ bgMusic.play(); musicBtn.textContent='🔊'; }
+  else { bgMusic.pause(); musicBtn.textContent='🎵'; }
+});
+</script>
+</body>
   </html><!DOCTYPE html>
 <html lang="fr">
 <head>
