@@ -3,324 +3,517 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KermyOne | Univers Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+<title>𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾 - Film Anime</title>
 <style>
 body {
-  margin:0; padding:0; font-family:'Orbitron',sans-serif; color:#00fff7;
-  text-align:center; overflow-x:hidden; background:#000;
+    margin:0;
+    padding:0;
+    font-family:'Arial',sans-serif;
+    background: linear-gradient(180deg, #000000 0%, #330000 100%);
+    color:#ff4500;
+    text-align:center;
+    overflow:hidden;
+    height: 100vh;
 }
-body::before {
-  content:""; position:fixed; top:0; left:0; right:0; bottom:0;
-  background:url("https://i.ibb.co/VNQ0vJj/galaxy-stars.gif") center/cover no-repeat;
-  z-index:-1; opacity:0.45;
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
-
-/* Overlay bienvenue */
-#welcomeOverlay {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.95); color:#00fff7;
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
-  z-index:9999; font-family:'Orbitron',sans-serif;
+h2 { 
+    font-size:1.8em; 
+    margin-bottom:10px; 
+    text-shadow: 0 0 10px rgba(255, 69, 0, 0.7);
 }
-#welcomeOverlay h2 { font-size:36px; margin-bottom:20px; }
-#welcomeOverlay .progressWrapper {
-  width:80%; background:#111; border-radius:10px; overflow:hidden; margin-bottom:10px;
+p { 
+    font-size:1.1em; 
+    line-height:1.6em; 
+    max-width:800px; 
+    margin:20px auto; 
+    text-align:justify;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
-#welcomeProgress { width:0%; height:20px; background:#00fff7; }
-#welcomePercentage { margin-top:5px; font-size:18px; }
-
-/* Header */
-header {
-  padding:40px 20px; background:rgba(0,0,0,0.8);
-  border-bottom:2px solid #00fff7; box-shadow:0 0 25px #00fff7;
+#chapterDisplay { 
+    display:none; 
+    animation:fadeIn 1.5s ease-in-out; 
 }
-h1 {
-  margin:0; font-size:50px; position:relative;
-  color:#00fff7; text-shadow:0 0 10px #00fff7,0 0 20px #0088ff;
-  animation: glitch 1s infinite;
+#loadingScreen { 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:100%; 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    flex-direction:column; 
+    background:#000; 
+    color:#ff4500; 
+    font-size:1.8em; 
+    z-index: 100;
 }
-@keyframes glitch{
-  0%{text-shadow:2px 0 #00fff7,-2px 0 #0088ff;}
-  25%{text-shadow:-2px 0 #00fff7,2px 0 #0088ff;}
-  50%{text-shadow:2px 2px #00fff7,-2px -2px #0088ff;}
-  75%{text-shadow:-2px 2px #00fff7,2px -2px #0088ff;}
-  100%{text-shadow:2px 0 #00fff7,-2px 0 #0088ff;}
+#progressBar { 
+    width:70%; 
+    height:20px; 
+    border:2px solid #ff4500; 
+    margin-top:20px; 
+    border-radius:10px; 
+    overflow:hidden; 
 }
-.typed {
-  font-size:20px; color:#ccc; margin-top:15px;
-  border-right:2px solid #00fff7; white-space:nowrap; overflow:hidden;
-  animation:typing 6s steps(60,end),blink 0.8s infinite; width:0;
+#progress { 
+    height:100%; 
+    width:0%; 
+    background-color:#ff0000; 
+    transition: width 0.3s ease;
 }
-@keyframes typing{from{width:0;}to{width:100%;}}
-@keyframes blink{50%{border-color:transparent;}}
-
-/* Boxes */
-.box {
-  margin:50px auto; padding:40px; background:rgba(0,0,0,0.7);
-  width:90%; max-width:700px; border-radius:15px;
-  box-shadow:0 0 40px #00fff7,0 0 60px #0088ff;
-  animation: floatBox 6s ease-in-out infinite;
+button { 
+    padding:12px 25px; 
+    font-size:1em; 
+    margin:10px; 
+    cursor:pointer; 
+    background:#ff0000; 
+    color:#000; 
+    border:none; 
+    border-radius:8px; 
+    transition:all 0.3s ease; 
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
-@keyframes floatBox{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
-
-.offers { display:flex; gap:20px; overflow-x:auto; padding:20px; perspective:1000px; }
-.card {
-  flex:0 0 250px; background:rgba(10,10,10,0.8);
-  border-radius:12px; padding:20px;
-  box-shadow:0 0 20px #00fff7; transition:0.3s transform;
-  transform-style:preserve-3d;
+button:hover { 
+    background:#ff4500; 
+    color:#fff; 
+    transform: scale(1.05);
 }
-.card:hover { transform: rotateY(10deg) scale(1.1); box-shadow:0 0 35px #00fff7,0 0 60px #0088ff; }
-.card h3 { margin-bottom:10px; color:#00fff7; }
-.card p { color:#ccc; font-size:14px; }
-
-.btn {
-  display:inline-block; margin-top:15px;
-  padding:12px 25px;
-  background: linear-gradient(90deg,#00fff7,#0088ff);
-  color:#000; text-decoration:none; font-weight:bold;
-  border-radius:25px; box-shadow:0 0 20px #00fff7;
-  transition: all 0.3s ease; animation: neonGlow 2s infinite alternate;
+#navButtons { 
+    margin-top:20px; 
 }
-.btn:hover { transform: scale(1.1) rotateX(5deg) rotateY(5deg); box-shadow:0 0 50px #00fff7,0 0 80px #0088ff; }
-@keyframes neonGlow {0%{box-shadow:0 0 20px #00fff7;}50%{box-shadow:0 0 40px #00fff7,0 0 60px #0088ff;}100%{box-shadow:0 0 25px #00fff7,0 0 50px #0088ff;}}
-
-/* TicTacToe */
-#ticTacToe {
-  margin:20px auto; display:grid; grid-template-columns:repeat(3,100px); grid-gap:10px;
-  justify-content:center;
+@keyframes fadeIn { 
+    from{opacity:0;} 
+    to{opacity:1;} 
 }
-.tttCell {
-  width:100px; height:100px; background:#111; color:#00fff7;
-  display:flex; align-items:center; justify-content:center;
-  font-size:48px; cursor:pointer; border-radius:10px; box-shadow:0 0 15px #00fff7;
-  transition:0.3s;
+.chapter-counter {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #ff8c00;
 }
-.tttCell:hover { transform:scale(1.1); box-shadow:0 0 30px #00fff7,0 0 50px #0088ff;}
-.tttCell.placed {
-  animation: placedEffect 0.3s ease;
-}
-@keyframes placedEffect{
-  0%{transform:scale(0.5); opacity:0;}
-  100%{transform:scale(1); opacity:1;}
-}
-#tttStatus { margin-top:15px; font-size:18px; }
-#restartBtn { margin-top:15px; padding:10px 20px; background:#00fff7; color:#000; border:none; border-radius:10px; cursor:pointer; }
-#difficultySelect { margin-top:10px; padding:8px 15px; border-radius:10px; border:none; }
-
-/* Footer */
-footer {margin-top:60px; padding:25px; background:rgba(0,0,0,0.9); color:#aaa; font-size:15px; border-top:1px solid #00fff7; line-height:1.6em;}
-
-/* Music Button */
-#musicBtn {
-  position:fixed; top:20px; right:20px; background:#00fff7;
-  color:#000; border:none; border-radius:50%; width:50px; height:50px;
-  font-size:20px; cursor:pointer; box-shadow:0 0 20px #00fff7; transition:0.3s;
-}
-#musicBtn:hover { transform:scale(1.1); box-shadow:0 0 30px #00fff7; }
 </style>
 </head>
 <body>
 
-<!-- Overlay bienvenue -->
-<div id="welcomeOverlay">
-  <h2 id="welcomeText">Bienvenue !</h2>
-  <div class="progressWrapper"><div id="welcomeProgress"></div></div>
-  <div id="welcomePercentage">0%</div>
+<div id="loadingScreen">
+    Chargement de la légende...
+    <div id="progressBar"><div id="progress"></div></div>
 </div>
 
-<header>
-  <h1>KermyOne 🚀</h1>
-  <p class="typed">Bienvenue dans l’univers premium où chaque clic peut transformer ton temps en or ✨</p>
-</header>
-
-<div class="box">
-  <h2>À propos de KermyOne 💎</h2>
-  <p>Nous offrons des opportunités exclusives pour gagner de l'argent en ligne, découvrir de nouvelles apps et s'amuser tout en restant premium. 🎮💰</p>
+<div id="welcome" style="display:none;" class="container">
+    <h1>𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾</h1>
+    <p>Bienvenue dans l'univers sombre et épique de <strong>𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾</strong>, l'histoire d'un enfant fragile devenu roi des ténèbres.</p>
+    <button onclick="startStory()">Activer la puissance du Roi</button>
 </div>
 
-<div class="box">
-  <h2>Nos offres exclusives 💎</h2>
-  <div class="offers">
-    <div class="card">
-      <h3>Application Magique</h3>
-      <p>Installe l’app et reçois ta récompense instantanément 💰</p>
-      <a href="#" target="_blank" class="btn">Télécharger</a>
+<div id="chapterDisplay" class="container">
+    <h2 id="chapterTitle"></h2>
+    <p id="chapterText"></p>
+    <div class="chapter-counter" id="chapterCounter"></div>
+    <div id="navButtons">
+        <button onclick="prevChapter()">Précédent</button>
+        <button onclick="nextChapter()">Suivant</button>
     </div>
-    <div class="card">
-      <h3>Offre Spéciale 🔥</h3>
-      <p>Participe à cette offre et gagne des bonus exclusifs 🚀</p>
-      <a href="#" target="_blank" class="btn">Découvrir</a>
-    </div>
-    <div class="card">
-      <h3>Jeu Futuriste 🎮</h3>
-      <p>Teste ce jeu incroyable et profite de récompenses uniques ⭐</p>
-      <a href="#" target="_blank" class="btn">Jouer</a>
-    </div>
-  </div>
 </div>
-
-<div class="box">
-  <h2>Mini-Jeu TicTacToe 🎮</h2>
-  <select id="difficultySelect">
-    <option value="easy">Facile</option>
-    <option value="medium">Moyen</option>
-    <option value="hard">Difficile</option>
-    <option value="extra">Extra</option>
-  </select>
-  <div id="ticTacToe">
-    <div class="tttCell" data-index="0"></div>
-    <div class="tttCell" data-index="1"></div>
-    <div class="tttCell" data-index="2"></div>
-    <div class="tttCell" data-index="3"></div>
-    <div class="tttCell" data-index="4"></div>
-    <div class="tttCell" data-index="5"></div>
-    <div class="tttCell" data-index="6"></div>
-    <div class="tttCell" data-index="7"></div>
-    <div class="tttCell" data-index="8"></div>
-  </div>
-  <p id="tttStatus">Tour de X</p>
-  <button id="restartBtn">Recommencer</button>
-</div>
-
-<!-- Bouton musique -->
-<button id="musicBtn">🎵</button>
-<audio id="bgMusic" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-scifi.mp3" type="audio/mpeg">
-</audio>
-
-<footer>
-  &copy; 2025 KermyOne. Tous droits réservés.
-  contacter nous:+50935399104/+50943261390
-  ou kermyone@gmail.com
-</footer>
 
 <script>
-// Overlay bienvenue avec progression
-let progress = document.getElementById('welcomeProgress');
-let percentage = document.getElementById('welcomePercentage');
-let overlay = document.getElementById('welcomeOverlay');
-let width = 0;
-let interval = setInterval(() => {
-  if (width >= 100) { clearInterval(interval); overlay.style.display = 'none'; }
-  else { width++; progress.style.width = width + '%'; percentage.textContent = width + '%'; }
-}, 30);
+// Tableau des 100 chapitres de l'histoire
+const chapters = [
+    {title:"Chapitre 1 – L'ombre de l'enfance", text:"Kervens, enfant fragile, se cachait derrière les piliers de l'école. Les rires cruels de ses camarades résonnaient dans la cour comme des coups de marteau. Chaque humiliation s'inscrivait dans son esprit comme une cicatrice brûlante. Il serrait les poings, les yeux brillants de larmes et de colère, et murmurait à voix basse : 'Un jour, ils sauront...'"},
+    {title:"Chapitre 2 – Le goût de la douleur", text:"Les nuits étaient les pires. Les ombres de sa chambre semblaient s'animer, et chaque craquement du bois devenait une menace. Kervens sentait son cœur battre à toute vitesse, mais au lieu de se cacher, il se leva et s'entraîna dans le noir, frappant des sacs improvisés et courant jusqu'à sentir ses muscles brûler. Chaque goutte de sueur devenait une promesse de vengeance silencieuse."},
+    {title:"Chapitre 3 – Les premiers pas de l'ombre", text:"Un soir, alors que la pluie frappait les toits, il surprit ses persécuteurs en train de commettre une injustice contre un plus jeune. Sans réfléchir, il intervint, utilisant la force qu'il avait forgée dans la solitude. Les visages surpris se figèrent, et pour la première fois, Kervens sentit un frisson de pouvoir parcourir son corps."},
+    {title:"Chapitre 4 – Le pacte silencieux", text:"Assis sous un arbre, il ouvrit son journal secret et écrivit ses ambitions : 'Je ne serai jamais faible. Chaque coup, chaque humiliation me rendra plus fort.' Le vent semblait murmurer son futur, et les branches dansaient comme si elles saluaient sa détermination."},
+    {title:"Chapitre 5 – L'épreuve du feu", text:"Le premier vrai défi arriva lorsqu'un groupe plus âgé tenta de le provoquer pour tester sa force. Kervens sentit la peur monter, mais au lieu de fuir, il fit face. Chaque mouvement, chaque esquive, chaque contre était précis, comme chorégraphié par des années de préparation secrète."},
+    {title:"Chapitre 6 – La maîtrise du corps", text:"Kervens passa des heures à comprendre son propre corps. Ses muscles, ses réflexes, ses sens étaient affinés. Il apprit à bouger sans bruit, à frapper avec précision et à disparaître dans l'ombre."},
+    {title:"Chapitre 7 – L'ombre qui inspire", text:"Même ceux qui l'avaient humilié jadis commencèrent à murmurer son nom avec crainte et respect. Chaque action de Kervens devenait légendaire dans l'école, ses gestes calculés et imprévisibles."},
+    {title:"Chapitre 8 – Le secret du roi", text:"Il découvrit un ancien manuscrit qui parlait du pouvoir des ténèbres et du destin des rois oubliés. Chaque mot l'emplissait d'une énergie mystérieuse et grandissante."},
+    {title:"Chapitre 9 – L'alliance inattendue", text:"Kervens rencontra un allié improbable, un camarade plus âgé qui avait observé ses efforts en secret. Ensemble, ils commencèrent à combiner force et stratégie, créant un duo redoutable."},
+    {title:"Chapitre 10 – La trahison", text:"Une trahison vint frapper son cercle proche. Mais au lieu de le briser, elle aiguisa sa détermination et lui enseigna la valeur de la méfiance et de la vigilance."},
+    {title:"Chapitre 11 – Le chemin du sang", text:"Il traversa des terres hostiles et affronta des adversaires qui mettaient à l'épreuve sa volonté. Chaque combat renforçait son esprit, chaque cicatrice racontait une histoire."},
+    {title:"Chapitre 12 – L'initiation", text:"Une cérémonie secrète le plaça devant des épreuves mystiques. Son corps et son esprit furent testés jusqu'aux limites, et il en sortit transformé, prêt pour des défis plus grands."},
+    {title:"Chapitre 13 – L'éveil des ténèbres", text:"Ses pouvoirs se manifestaient de plus en plus, et il sentait l'ombre l'entourer, réagissant à ses émotions et à sa volonté. Chaque mouvement devenait une danse avec l'obscurité."},
+    {title:"Chapitre 14 – La première conquête", text:"Kervens affronta son premier véritable ennemi redoutable. Le combat fut long et exigeant, mais il sortit victorieux, marquant le début de sa domination."},
+    {title:"Chapitre 15 – Le roi en formation", text:"Sa réputation grandit, et ceux qui le regardaient maintenant voyaient non pas un enfant faible, mais un futur roi, calculateur et redoutable."},
+    {title:"Chapitre 16 – Les ombres conspirent", text:"Des ennemis plus puissants commencèrent à comploter contre lui, mais il était prêt. Son esprit stratège anticipait chaque mouvement et chaque ruse."},
+    {title:"Chapitre 17 – Le duel des maîtres", text:"Un ancien maître vint tester ses compétences. Le duel dura des heures, chaque coup résonnant comme un tonnerre. Kervens apprit à fusionner force, ruse et patience."},
+    {title:"Chapitre 18 – La nuit des révélations", text:"Une nuit, sous la pleine lune, il comprit enfin l'étendue de son destin. Les étoiles semblaient s'incliner devant sa détermination."},
+    {title:"Chapitre 19 – La peur des autres", text:"Partout où il marchait, ses ennemis frissonnaient. La peur se transformait en respect, et chaque pas qu'il faisait laissait une trace indélébile."},
+    {title:"Chapitre 20 – L'ombre triomphante", text:"Kervens défaisait ses adversaires avec une précision glaciale. Ses gestes devenaient légendaires, et les plus braves tremblaient à son approche."},
+    {title:"Chapitre 21 – L'alliance des ténèbres", text:"Il forma une alliance secrète avec ceux qui partageaient sa vision. Ensemble, ils commençaient à prendre le contrôle de territoires et d'âmes."},
+    {title:"Chapitre 22 – Le murmure du pouvoir", text:"Chaque décision, chaque geste renforçait son influence. Les rumeurs sur sa puissance se répandaient comme une flamme dans la nuit."},
+    {title:"Chapitre 23 – La tempête intérieure", text:"Même victorieux, il ressentait un conflit interne. Ses émotions étaient un feu qu'il devait apprendre à contrôler. La colère, la peur et la tristesse se mêlaient, mais Kervens apprit à les transformer en force et en détermination, façonnant son esprit comme une lame prête à trancher toute opposition."},
+    {title:"Chapitre 24 – L'épreuve de l'ombre", text:"Une nouvelle menace surgit sous la forme d'un ennemi invisible, qui attaquait silencieusement et avec ruse. Kervens dut utiliser tout ce qu'il avait appris pour prévoir et contrer chaque attaque, chaque piège, jusqu'à ce que l'ombre elle-même reconnaisse sa puissance."},
+    {title:"Chapitre 25 – Le sacrifice", text:"Pour protéger un allié précieux, Kervens prit des risques qui auraient pu lui coûter la vie. Dans la nuit, son courage brillait comme une flamme éclatante, inspirant ceux qui l'entouraient et marquant les esprits à jamais."},
+    {title:"Chapitre 26 – L'éveil du stratège", text:"À force de combats et de réflexions, Kervens développa un sens stratégique hors du commun. Chaque mouvement devenait une anticipation, chaque décision un plan sur plusieurs étapes. Son esprit s'affinait comme une lame tranchante prête à frapper."},
+    {title:"Chapitre 27 – La confrontation finale", text:"Face à un adversaire redoutable, Kervens entra dans un duel épique où chaque attaque semblait défier le temps lui-même. Le choc des forces résonnait dans l'air, chaque geste devenait légendaire, chaque instant un tournant de son destin."},
+    {title:"Chapitre 28 – Le triomphe silencieux", text:"Après un combat acharné, Kervens resta immobile, haletant mais victorieux. Le silence s'installa autour de lui, respect et crainte se mêlant dans le regard de ceux qui assistaient à sa victoire. Il comprit que la puissance ne se montrait pas seulement par la force, mais aussi par la maîtrise de soi."},
+    {title:"Chapitre 29 – L'ombre s'étend", text:"Alors que le monde semblait encore petit face à sa grandeur, Kervens sentit que son influence s'étendait. Chaque geste, chaque mot, chaque décision consolidait son autorité et son aura de roi des ténèbres."},
+    {title:"Chapitre 30 – La consécration du roi", text:"Sur un sommet balayé par les vents, Kervens contempla son royaume et tous ceux qui l'avaient défié ou suivi. Les étoiles brillaient au-dessus de lui, et il comprit que sa destinée était accomplie. Il était devenu le véritable 𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾, maître de l'ombre et de la lumière de son monde."},
+    {title:"Chapitre 31 – Les murmures du passé", text:"Kervens sentit les voix de ses ennemis tombés et des alliés perdus résonner dans sa mémoire. Chaque souvenir était une leçon, chaque regret une flamme qui alimentait sa détermination. Il comprit que son passé, aussi douloureux soit-il, était la clé de son futur."},
+    {title:"Chapitre 32 – L'alliance brisée", text:"Une trahison inattendue secoua son cercle proche. Kervens dut affronter la douleur de voir ceux en qui il avait confiance devenir ses adversaires. Mais il transforma cette douleur en une force silencieuse, renforçant son esprit et son autorité."},
+    {title:"Chapitre 33 – Le passage des ténèbres", text:"Il marcha à travers une forêt obscure, où les ombres semblaient vivantes et tenter de le détourner de son chemin. Mais Kervens, concentré, sentit son lien avec l'obscurité se renforcer et franchit la forêt comme un roi des ténèbres inébranlable."},
+    {title:"Chapitre 34 – L'entraînement ultime", text:"Pendant des jours, il perfectionna ses techniques, combinant vitesse, précision et stratégie. Chaque mouvement devenait instinctif, chaque action calculée. Son corps et son esprit fusionnaient dans une harmonie parfaite de puissance."},
+    {title:"Chapitre 35 – Le défi de l'invisible", text:"Un adversaire mystérieux surgit, attaquant sans être vu. Kervens dut développer de nouveaux sens, écouter le vent, sentir l'air, anticiper l'invisible. Ce combat le changea à jamais, affinant sa perception et sa maîtrise du danger."},
+    {title:"Chapitre 36 – La lueur dans la nuit", text:"Au milieu d'une nuit sans étoiles, il trouva un moment de calme et de clarté. Une flamme intérieure brûlait, guidant ses pas et ses décisions. Il comprit que la puissance n'était rien sans la vision et la sagesse."},
+    {title:"Chapitre 37 – Les ennemis convergent", text:"Des forces ennemies plus nombreuses et organisées se levèrent contre lui. Kervens, imperturbable, étudia chaque mouvement et chaque intention, utilisant ses connaissances et sa ruse pour contrer les attaques avant même qu'elles ne viennent."},
+    {title:"Chapitre 38 – Le choix du roi", text:"Il se retrouva face à un dilemme moral : sacrifier une partie de ses alliés pour protéger le reste ou risquer la défaite totale. Avec calme et stratégie, il choisit le chemin le plus difficile mais juste, consolidant son autorité et son image de roi."},
+    {title:"Chapitre 39 – Le feu intérieur", text:"Dans le silence d'une grotte, il méditait sur ses combats passés et futurs. Le feu intérieur qu'il entretenait depuis son enfance brûlait avec intensité, préparant son esprit et son corps pour le prochain affrontement, plus grand que tout ce qu'il avait connu."},
+    {title:"Chapitre 40 – L'ombre s'élève", text:"À l'aube, Kervens se tint sur une colline, observant son royaume en expansion. Les ombres de ses ennemis reculèrent à son passage, et la peur devint respect. Il savait que chaque chapitre de sa vie l'avait mené ici, et que son ascension ne faisait que commencer."},
+    {title:"Chapitre 41 – La citadelle des ombres", text:"Kervens établit sa base dans une ancienne forteresse abandonnée, où les murs semblaient murmurer des secrets oubliés. Il y organisa ses forces et prépara ses plans pour étendre son influence au-delà des frontières connues."},
+    {title:"Chapitre 42 – L'héritage du sang", text:"Il découvrit que sa lignée remontait à une ancienne dynastie de rois des ténèbres, expliquant ses pouvoirs naturels et sa connexion avec l'ombre. Cette révélation renforça sa détermination à accomplir son destin."},
+    {title:"Chapitre 43 – Les gardiens du seuil", text:"Des êtres anciens et puissants, gardiens des frontières entre les mondes, se dressèrent contre Kervens. Il dut prouver sa valeur et sa légitimité dans des épreuves qui testèrent son courage, sa sagesse et sa force."},
+    {title:"Chapitre 44 – La prophétie oubliée", text:"Dans les profondeurs d'une bibliothèque interdite, Kervens trouva un texte ancien prédisant l'avènement d'un roi qui unirait les ténèbres et la lumière. Chaque mot semblait décrire son propre parcours, renforçant sa conviction d'être l'élu."},
+    {title:"Chapitre 45 – L'épreuve du miroir", text:"Face à un artefact magique, Kervens fut confronté à ses propres démons intérieurs. Il dut affronter ses peurs, ses doutes et ses faiblesses pour en sortir plus fort et plus déterminé que jamais."},
+    {title:"Chapitre 46 – L'alliance des éléments", text:"Kervens apprit à maîtriser non seulement les ténèbres, mais aussi les forces élémentaires. Le feu, l'eau, la terre et l'air répondaient à son appel, faisant de lui un adversaire encore plus redoutable."},
+    {title:"Chapitre 47 – La bataille des plaines", text:"Une armée ennemie marcha sur ses terres. Kervens mena ses forces au combat, démontrant des capacités tactiques exceptionnelles et une maîtrise du champ de bataille qui laissa ses adversaires stupéfaits."},
+    {title:"Chapitre 48 – Le prix de la victoire", text:"Bien que victorieux, Kervens perdit des alliés précieux dans la bataille. Il apprit que le pouvoir avait un coût, et que chaque décision en tant que roi portait le poids de vies humaines."},
+    {title:"Chapitre 49 – La renaissance des cendres", text:"Après une défaite apparente, Kervens se releva plus fort que jamais. Comme un phénix renaissant de ses cendres, il transforma son échec en une leçon précieuse et en une détermination renouvelée."},
+    {title:"Chapitre 50 – Le conseil des rois", text:"Kervens fut convié à une réunion secrète des souverains des différentes factions. Il y démontra sa sagesse et sa force, gagnant le respect même de ceux qui le considéraient comme un rival."},
+    {title:"Chapitre 51 – L'ombre et la lumière", text:"Kervens comprit que les ténèbres et la lumière n'étaient pas opposées, mais complémentaires. Il apprit à équilibrer ces forces en lui, devenant plus puissant et plus sage dans le processus."},
+    {title:"Chapitre 52 – Le sanctuaire perdu", text:"Guidé par des visions, Kervens découvrit un sanctuaire ancien où les premiers rois des ténèbres avaient autrefois régné. Là, il acquit des connaissances oubliées et des pouvoirs qui renforcèrent son autorité."},
+    {title:"Chapitre 53 – L'éveil du dragon", text:"Kervens réveilla une créature légendaire endormie depuis des siècles. Le dragon, impressionné par sa force et sa détermination, lui accorda sa loyauté, ajoutant une puissance formidable à son arsenal."},
+    {title:"Chapitre 54 – Le piège dimensionnel", text:"Des ennemis utilisèrent la magie pour piéger Kervens dans une dimension parallèle. Il dut utiliser toute son intelligence et sa force pour trouver une faille et revenir dans son monde, plus fort et plus déterminé."},
+    {title:"Chapitre 55 – Le jugement des anciens", text:"Des êtres immémoriaux jugèrent Kervens pour ses actions et son utilisation du pouvoir. Il défendit ses choix avec éloquence et conviction, prouvant qu'il était digne de son titre de roi."},
+    {title:"Chapitre 56 – L'unification des clans", text:"Kervens réussit l'exploit d'unifier des clans rivaux sous sa bannière, créant une alliance plus forte que tout ce que le monde avait connu auparavant."},
+    {title:"Chapitre 57 – Le crépuscule des dieux", text:"Kervens défia les divinités elles-mêmes, refusant de se soumettre à un destin qu'il n'avait pas choisi. Son acte de rébellion changea l'équilibre du pouvoir dans l'univers."},
+    {title:"Chapitre 58 – L'héritier des ténèbres", text:"Kervens prit sous son aile un jeune prodige, lui enseignant les voies du pouvoir et préparant la prochaine génération de souverains des ténèbres."},
+    {title:"Chapitre 59 – La cité cachée", text:"Il découvrit une cité secrète où vivaient les derniers maîtres des arts obscurs. Là, il perfectionna ses techniques et apprit des secrets que peu connaissaient."},
+    {title:"Chapitre 60 – Le serment éternel", text:"Kervens et ses plus fidèles alliés firent un serment de loyauté éternelle, scellant leur destin commun et renforçant les liens qui les unissaient."},
+    {title:"Chapitre 61 – L'épreuve du temps", text:"Kervens voyagea à travers le temps, découvrant les erreurs du passé et les possibilités du futur. Cette expérience changea sa perspective sur le pouvoir et la responsabilité."},
+    {title:"Chapitre 62 – La forteresse céleste", text:"Il assiégea une forteresse imprenable située dans les cieux, démontrant que rien ne pouvait résister à sa détermination et à sa puissance."},
+    {title:"Chapitre 63 – Le chant des sirènes", text:"Des créatures enchantées tentèrent de séduire Kervens avec des promesses de pouvoir et d'immortalité. Mais il résista à leurs charmes, prouvant sa force de caractère."},
+    {title:"Chapitre 64 – L'équilibre du cosmos", text:"Kervens comprit que son rôle n'était pas seulement de régner, mais de maintenir l'équilibre entre les forces de l'univers. Cette prise de conscience élargit sa vision du pouvoir."},
+    {title:"Chapitre 65 – Le labyrinthe des âmes", text:"Il voyagea à travers un labyrinthe magique où chaque couloir représentait une âme qu'il avait rencontrée. Cette expérience lui fit comprendre l'impact de ses actions sur les autres."},
+    {title:"Chapitre 66 – Le festival des ombres", text:"Kervens organisa une grande célébration pour ses sujets, démontrant qu'un roi des ténèbres pouvait aussi apporter joie et prospérité à son peuple."},
+    {title:"Chapitre 67 – L'appel du vide", text:"Face à l'appel séduisant du néant, Kervens dut choisir entre la tentation du pouvoir absolu et la responsabilité envers ceux qui dépendaient de lui."},
+    {title:"Chapitre 68 – La renaissance du phénix", text:"Après un sacrifice ultime, Kervens renaquit sous une forme plus puissante, fusionnant avec l'essence même des ténèbres et devenant une entité quasi-divine."},
+    {title:"Chapitre 69 – Le conseil des étoiles", text:"Kervens communiqua avec des entités stellaires qui lui révélèrent des secrets sur l'origine de l'univers et sa place dans le grand dessein cosmique."},
+    {title:"Chapitre 70 – L'héritage éternel", text:"Il créa des artefacts magiques qui perpétueraient son héritage à travers les âges, assurant que son influence durerait bien au-delà de sa propre existence."},
+    {title:"Chapitre 71 – Le chant du destin", text:"Kervens entendit la mélodie du destin elle-même, comprenant enfin le motif complexe qui reliait toutes les vies et tous les événements de l'univers."},
+    {title:"Chapitre 72 – Le jardin des souvenirs", text:"Dans un lieu magique où poussaient les souvenirs, Kervens revisita les moments clés de sa vie, trouvant la paix avec son passé douloureux."},
+    {title:"Chapitre 73 – L'éveil des titans", text:"Il réveilla des êtres colossaux endormis depuis l'aube des temps, gagnant leur allégeance et ajoutant une puissance inimaginable à son royaume."},
+    {title:"Chapitre 74 – Le miroir des possibilities", text:"Face à un artefact montrant tous les chemins possibles de son destin, Kervens choisit délibérément celui qui mènerait à la plus grande harmonie pour son royaume."},
+    {title:"Chapitre 75 – Le crépuscule des anciens", text:"Kervens affronta les derniers représentants de l'ancien ordre, marquant la fin d'une ère et le début de son règne incontesté."},
+    {title:"Chapitre 76 – La symphonie des éléments", text:"Il apprit à harmoniser toutes les forces de la nature, créant une symphonie de pouvoir qui résonnait à travers toutes les dimensions."},
+    {title:"Chapitre 77 – Le sanctuaire du temps", text:"Kervens découvrit un lieu où le temps n'existait pas, lui permettant de contempler l'éternité et de comprendre la nature transitoire de toute chose."},
+    {title:"Chapitre 78 – L'alliance des mondes", text:"Il établit des ponts entre différentes dimensions, unissant des peuples variés sous sa bannière et créant un empire multiversel."},
+    {title:"Chapitre 79 – Le chant des abysses", text:"Kervens plongea dans les profondeurs les plus obscures de l'existence, affrontant des horreurs innommables et en ressortant transformé."},
+    {title:"Chapitre 80 – L'aube d'un nouvel âge", text:"Sous le règne de Kervens, le monde entra dans une ère de prospérité et d'équilibre, où les ténèbres et la lumière coexistaient en harmonie."},
+    {title:"Chapitre 81 – Le testament du roi", text:"Kervens rédigea ses enseignements et sa philosophie, créant un guide pour les générations futures de souverains des ténèbres."},
+    {title:"Chapitre 82 – Le concert des sphères", text:"Il apprit à influencer la musique des sphères célestes, capable de modifier la réalité elle-même par la puissance de sa volonté."},
+    {title:"Chapitre 83 – Le dernier rempart", text:"Kervens défendit son royaume contre une invasion venue des confins de l'univers, démontrant que rien ne pouvait menacer ceux qu'il protégeait."},
+    {title:"Chapitre 84 – L'éveil des constellations", text:"Les étoiles elles-mêmes reconnurent son autorité, leurs formations célestes changeant pour refléter son ascension au pouvoir suprême."},
+    {title:"Chapitre 85 – Le paradoxe du pouvoir", text:"Kervens comprit que le véritable pouvoir résidait dans la capacité à y renoncer, une révélation qui transforma profondément sa conception de la royauté."},
+    {title:"Chapitre 86 – Le chant de la création", text:"Il apprit les secrets de la genèse, capable non seulement de détruire mais aussi de créer, devenant un véritable démiurge."},
+    {title:"Chapitre 87 – Le jugement dernier", text:"Kervens présida au jugement des âmes, déterminant le destin de chacun selon ses actions et ses intentions, avec justice et équité."},
+    {title:"Chapitre 88 – L'harmonie des contraires", text:"Il réalisa que toutes les oppositions - lumière et ténèbres, ordre et chaos, création et destruction - n'étaient que les facettes d'une même réalité."},
+    {title:"Chapitre 89 – Le souffle de l'éternité", text:"Kervens devint intemporel, existant simultanément dans le passé, le présent et le futur, transcendant les limitations de l'existence linéaire."},
+    {title:"Chapitre 90 – Le royaume des rêves", text:"Il étendit son influence au domaine des songes, guidant les esprits endormis et apprenant les secrets que l'inconscient collectif renfermait."},
+    {title:"Chapitre 91 – L'odyssée stellaire", text:"Kervens voyagea à travers les étoiles, découvrant des civilisations extraterrestres et étendant son influence aux confins de la galaxie."},
+    {title:"Chapitre 92 – Le sanctuaire des silences", text:"Dans un lieu où le son n'existait pas, Kervens apprit à écouter le silence et y découvrit des vérités que le bruit du monde avait toujours masquées."},
+    {title:"Chapitre 93 – L'apothéose", text:"Kervens transcenda sa forme mortelle, devenant une entité purement énergétique tout en conservant sa conscience et sa volonté."},
+    {title:"Chapitre 94 – Le grand dessein", text:"Il comprit le plan cosmique dans son intégralité, voyant comment chaque événement, chaque vie, s'inscrivait dans un tableau plus vaste et plus complexe."},
+    {title:"Chapitre 95 – Le retour aux sources", text:"Kervens revint sur les lieux de son enfance, bouclant la boucle de son parcours et trouvant la paix avec celui qu'il avait été."},
+    {title:"Chapitre 96 – L'enseignement du maître", text:"Il consacra son temps à former une nouvelle génération, partageant les leçons tirées de son extraordinaire parcours."},
+    {title:"Chapitre 97 – Le testament éternel", text:"Kervens scella son héritage dans des artefacts magiques qui persisteraient à travers les âges, guidant les souverains futurs."},
+    {title:"Chapitre 98 – L'union des royaumes", text:"Il réussit l'exploit d'unir tous les royaumes, des plus lumineux aux plus obscurs, créant une harmonie jamais vue auparavant."},
+    {title:"Chapitre 99 – Le crépuscule du roi", text:"Kervens contempla l'aboutissement de son règne, satisfait de l'héritage qu'il laisserait et prêt à passer le flambeau."},
+        {title:"Chapitre 100 – L'éternité commence", text:"Kervens comprit que son histoire n'était qu'un chapitre dans le grand livre de l'univers. Alors qu'il regardait les étoiles, il sut que son influence durerait à travers les âges, non comme un souverain tyrannique, mais comme un gardien de l'équilibre, un roi dont la légende inspirerait les générations futures. L'enfant fragile était devenu le 𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾 éternel, maître des ténèbres et de la lumière, dont le nom résonnerait à travers l'éternité."}
+];
 
-// TicTacToe avec niveaux et restart
-const cells = document.querySelectorAll('.tttCell');
-const status = document.getElementById('tttStatus');
-const restartBtn = document.getElementById('restartBtn');
-const difficultySelect = document.getElementById('difficultySelect');
+let currentChapter = 0;
 
-let board = Array(9).fill('');
-let player = 'X';
-let ai = 'O';
-let gameOver = false;
-let difficulty = 'easy';
+// Simulation du chargement
+window.onload = function() {
+    let progress = 0;
+    const progressBar = document.getElementById('progress');
+    const loadingInterval = setInterval(() => {
+        progress += 2;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(loadingInterval);
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('welcome').style.display = 'block';
+            }, 500);
+        }
+        progressBar.style.width = progress + '%';
+    }, 50);
+};
 
-function checkWinner(b=board) {
-  const combos = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  for(let [a,b1,c] of combos){
-    if(b[a] && b[a]===b[b1] && b[a]===b[c]) return b[a];
-  }
-  if(!b.includes('')) return 'Tie';
-  return null;
+function startStory() {
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('chapterDisplay').style.display = 'block';
+    showChapter(currentChapter);
 }
 
-function canWin(b, sign, idx){
-  let copy = [...b]; copy[idx]=sign;
-  return checkWinner(copy)===sign;
-}
-
-function minimax(newBoard, playerSign){
-  let avail = newBoard.map((v,i)=>v===''?i:null).filter(v=>v!==null);
-  let winner = checkWinner(newBoard);
-  if(winner===ai) return {score:10};
-  if(winner===player) return {score:-10};
-  if(winner==='Tie') return {score:0};
-  let moves=[];
-  for(let i of avail){
-    let move = {};
-    move.index = i;
-    newBoard[i] = playerSign;
-    let result = minimax(newBoard, playerSign===ai?player:ai);
-    move.score = result.score;
-    newBoard[i]='';
-    moves.push(move);
-  }
-  if(playerSign===ai) return moves.reduce((a,b)=>a.score>b.score?a:b);
-  else return moves.reduce((a,b)=>a.score<b.score?a:b);
-}
-
-function aiMove() {
-  let empty = board.map((v,i)=>v===''?i:null).filter(v=>v!==null);
-  if(empty.length === 0) return;
-  let choice;
-  switch(difficulty){
-    case 'easy':
-      choice = empty[Math.floor(Math.random()*empty.length)];
-      break;
-    case 'medium':
-      choice = empty.find(i=>canWin(board, ai, i)) ?? empty[Math.floor(Math.random()*empty.length)];
-      break;
-    case 'hard':
-      choice = empty.find(i=>canWin(board, ai, i)) ?? empty.find(i=>canWin(board, player, i)) ?? empty[Math.floor(Math.random()*empty.length)];
-      break;
-    case 'extra':
-      choice = minimax(board, ai).index;
-      break;
-  }
-  board[choice] = ai;
-  cells[choice].textContent = ai;
-  cells[choice].classList.add('placed');
-}
-
-cells.forEach(cell=>{
-  cell.addEventListener('click', ()=>{
-    if(gameOver) return;
-    let idx = cell.dataset.index;
-    if(board[idx]===''){
-      board[idx]=player;
-      cell.textContent=player;
-      cell.classList.add('placed');
-      let winner = checkWinner();
-      if(winner){ endGame(winner); return; }
-      aiMove();
-      winner = checkWinner();
-      if(winner) endGame(winner);
-      else status.textContent = "Tour de X";
+function showChapter(index) {
+    const chapter = chapters[index];
+    document.getElementById('chapterTitle').textContent = chapter.title;
+    document.getElementById('chapterText').textContent = chapter.text;
+    document.getElementById('chapterCounter').textContent = `Chapitre ${index + 1} sur ${chapters.length}`;
+    
+    // Mise à jour des boutons de navigation
+    const prevButton = document.querySelector('button[onclick="prevChapter()"]');
+    const nextButton = document.querySelector('button[onclick="nextChapter()"]');
+    
+    prevButton.disabled = (index === 0);
+    
+    // AU DERNIER CHAPITRE, CHANGE LE BOUTON "SUIVANT" EN "SAISON 2"
+    if (index === chapters.length - 1) {
+        nextButton.textContent = 'Voir le Résumé Saison 2';
+        nextButton.onclick = showSeason1Summary;
+        nextButton.style.background = '#ff8c00';
+        nextButton.disabled = false;
+    } else {
+        nextButton.textContent = 'Suivant';
+        nextButton.onclick = nextChapter;
+        nextButton.style.background = '#ff0000';
+        nextButton.disabled = false;
     }
-  });
-});
-
-restartBtn.addEventListener('click', ()=>{
-  board.fill('');
-  cells.forEach(c=>{c.textContent=''; c.classList.remove('placed');});
-  gameOver=false;
-  status.textContent = "Tour de X";
-});
-
-difficultySelect.addEventListener('change', ()=>{
-  difficulty = difficultySelect.value;
-});
-
-function endGame(winner){
-  gameOver=true;
-  status.textContent = winner==='Tie'?"Égalité !": winner+" a gagné !";
+    
+    // Effet visuel de transition
+    document.getElementById('chapterDisplay').style.animation = 'none';
+    setTimeout(() => {
+        document.getElementById('chapterDisplay').style.animation = 'fadeIn 1.5s ease-in-out';
+    }, 10);
 }
 
-// Musique
-const musicBtn = document.getElementById('musicBtn');
-const bgMusic = document.getElementById('bgMusic');
-musicBtn.addEventListener('click', ()=>{
-  if(bgMusic.paused){ bgMusic.play(); musicBtn.textContent='🔊'; }
-  else { bgMusic.pause(); musicBtn.textContent='🎵'; }
+function nextChapter() {
+    if (currentChapter < chapters.length - 1) {
+        currentChapter++;
+        showChapter(currentChapter);
+    }
+}
+
+function prevChapter() {
+    if (currentChapter > 0) {
+        currentChapter--;
+        showChapter(currentChapter);
+    }
+}
+
+// RÉSUMÉ SAISON 1
+function showSeason1Summary() {
+    document.getElementById('chapterDisplay').style.display = 'none';
+    document.getElementById('season1Summary').style.display = 'block';
+}
+
+function startSeason2() {
+    document.getElementById('season1Summary').style.display = 'none';
+    document.getElementById('season2').style.display = 'block';
+    
+    // Lance la musique
+    const music = document.getElementById('backgroundMusic');
+    music.volume = 0.3;
+    music.play().catch(e => console.log("Musique nécessite interaction utilisateur"));
+    
+    showSeason2Chapter(currentSeason2Chapter);
+    createMusicControl();
+}
+
+// Navigation au clavier
+document.addEventListener('keydown', function(event) {
+    if (document.getElementById('chapterDisplay').style.display === 'block') {
+        if (event.key === 'ArrowRight' || event.key === ' ') {
+            nextChapter();
+        } else if (event.key === 'ArrowLeft') {
+            prevChapter();
+        }
+    }
+});
+</script>
+
+<!-- RÉSUMÉ SAISON 1 -->
+<div id="season1Summary" style="display:none;" class="container">
+    <h1>Résumé de la Saison 1</h1>
+    <div style="text-align:left; max-width:700px; margin:0 auto;">
+        <p><strong>L'Enfance Brisée :</strong> Kervens, enfant fragile, subit brimades et humiliations qui forgent sa détermination.</p>
+        <p><strong>La Transformation :</strong> Il se transforme en guerrier redoutable, maîtrisant les ténèbres et devenant une légende.</p>
+        <p><strong>L'Ascension :</strong> De simple élève à roi des ténèbres, il conquiert territoires et esprits.</p>
+        <p><strong>L'Équilibre :</strong> Il apprend à unir lumière et ténèbres, devenant gardien de l'équilibre cosmique.</p>
+        <p><strong>L'Héritage :</strong> Kervens devient le roi éternel, son nom résonnant à travers les âges.</p>
+    </div>
+    <div style="margin-top:30px;">
+        <button onclick="startSeason2()" style="background:#ff8c00; font-size:1.2em; padding:15px 30px;">
+            Commencer la Saison 2
+        </button>
+        <button onclick="document.getElementById('season1Summary').style.display='none'; document.getElementById('chapterDisplay').style.display='block';" style="background:#444;">
+            Revoir la Saison 1
+        </button>
+    </div>
+</div>
+
+<!-- SAISON 2 -->
+<div id="season2" style="display:none;" class="container">
+    <h1>𝕶𝔼𝕽𝕍𝔼ℕ𝕊 𝕶𝕴ℕ𝔾 - Saison 2</h1>
+    <h2 id="season2ChapterTitle"></h2>
+    <p id="season2ChapterText"></p>
+    <div class="chapter-counter" id="season2ChapterCounter"></div>
+    <div id="season2NavButtons">
+        <button onclick="prevSeason2Chapter()">Précédent</button>
+        <button onclick="nextSeason2Chapter()">Suivant</button>
+        <button onclick="returnToMenu()" style="background:#444;">Accueil</button>
+    </div>
+</div>
+
+<audio id="backgroundMusic" loop>
+    <source src="https://assets.mixkit.co/music/preview/mixkit-ambient-piano-478.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// SAISON 2 - 50 CHAPITRES
+const season2Chapters = [
+    {title: "S2 Chapitre 1 – L'Œil Divin", text: "Les dieux de l'Olympe commencèrent à remarquer la montée en puissance de Kervens. Zeus lui-même sentit son autorité menacée par ce mortel qui défiait l'ordre cosmique. 'Ce roi des ténèbres ose défier notre éternité ?' murmura-t-il depuis son trône céleste."},
+    {title: "S2 Chapitre 2 – L'Ambition Suprême", text: "Kervens, assoiffé de pouvoir, déclara à ses plus proches conseillers : 'Pourquoi se contenter d'être roi des hommes quand on peut devenir dieu ?' Son objectif était clair : l'apothéose. Mais cette ambition n'allait pas rester inaperçue dans les cieux."},
+    {title: "S2 Chapitre 3 – La Rencontre Fatidique", text: "Lors d'une visite dans un village paisible, Kervens rencontra Élodie, une jeune femme au sourire radieux qui soignait les blessés avec une compassion infinie. Pour la première fois depuis son enfance, son cœur de glace fondit sous ce regard bienveillant."},
+    {title: "S2 Chapitre 4 – Le Paradoxe de l'Amour", text: "Élodie, ignorant sa véritable identité, voyait en lui un homme blessé cherchant la rédemption. Kervens, déchiré entre son ambition divine et ses sentiments nouveaux, commença à douter de sa quête. 'Peut-on aimer et conquérir les cieux ?' se demanda-t-il."},
+    {title: "S2 Chapitre 5 – La Colère de l'Olympe", text: "Zeus, furieux, convoqua le conseil des dieux. 'Ce mortel ose défier notre autorité ! Il doit être puni !' Arès, dieu de la guerre, proposa une intervention directe : 'Laissez-moi anéantir cet insolent !'"},
+    {title: "S2 Chapitre 6 – Les Premiers Affrontements", text: "Les premiers envoyés divins attaquèrent le royaume de Kervens. Mais sa maîtrise des ténèbres s'était renforcée, et il repoussa les assaillants avec une facilité déconcertante. Les dieux comprirent qu'ils avaient affaire à un adversaire hors du commun."},
+    {title: "S2 Chapitre 7 – Le Secret d'Élodie", text: "Kervens découvrit qu'Élodie était en réalité une demi-déesse, fille d'Apollon cachée parmi les mortels pour la protéger des intrigues divines. Cette révélation complexifia leurs sentiments et leurs destins entrelacés."},
+    {title: "S2 Chapitre 8 – La Trahison d'Arès", text: "Le dieu de la guerre, Arès, jaloux de la puissance de Kervens et de l'affection qu'Élodie lui portait, commença à ourdir un plan diabolique pour le détruire en utilisant la jeune femme comme appât dans son piège mortel."},
+    {title: "S2 Chapitre 9 – Le Cœur Divisé", text: "Kervens confia à Élodie : 'Je dois devenir dieu, mais je ne veux pas te perdre.' Elle lui répondit avec douceur : 'L'amour véritable n'a pas besoin de divinité, Kervens. Il transcende déjà les cieux.'"},
+    {title: "S2 Chapitre 10 – L'Ultimatum Céleste", text: "Zeus donna un ultimatum à Kervens : 'Abandonne ta quête insensée ou affronte la colère totale de l'Olympe.' Kervens, le regard déterminé, répondit par un défi silencieux qui fit trembler les fondations du palais divin."},
+    {title: "S2 Chapitre 11 – L'Éveil du Pouvoir Divin", text: "Kervens commença à manifester des capacités qui dépassaient le simple contrôle des ténèbres. Son essence même semblait évoluer vers le divin, des éclairs d'énergie pure jaillissant de ses mains lorsqu'il protégeait Élodie."},
+    {title: "S2 Chapitre 12 – Le Pacte avec Hadès", text: "Le dieu des enfers, voyant en Kervens un allié potentiel contre Zeus, lui offrit un pacte : 'Mon soutien contre une part de ton futur pouvoir. Ensemble, nous pouvons renverser l'Olympe.' Kervens hésita, méfiant."},
+    {title: "S2 Chapitre 13 – Le Sacrifice d'Élodie", text: "Élodie utilisa ses propres pouvoirs divins pour protéger Kervens d'une attaque surprise d'Arès, s'affaiblissant gravement dans le processus. Son amour lui coûtait presque la vie, mais elle ne regrettait rien."},
+    {title: "S2 Chapitre 14 – La Fureur de Kervens", text: "Voyant Élodie blessée, Kervens libéra une puissance si terrible que les cieux tremblèrent. Les éclairs de Zeus semblaient pâles face à la tempête de ténèbres qu'il déchaîna. Les dieux comprirent qu'ils avaient sous-estimé leur adversaire."},
+    {title: "S2 Chapitre 15 – L'Alliance des Titans", text: "Les Titans, ennemis éternels des dieux de l'Olympe, approchèrent Kervens pour former une alliance contre Zeus. 'Rejoins-nous, et ensemble nous écraserons ces dieux arrogants !' proposa Cronos."},
+    {title: "S2 Chapitre 16 – Le Dilemme Moral", text: "Kervens hésita : devait-il s'allier avec les Titans, risquant de devenir ce qu'il combattait, ou trouver sa propre voie vers la divinité sans reproduire les erreurs des anciens dieux ?"},
+    {title: "S2 Chapitre 17 – La Prophétie d'Athéna", text: "La déesse de la sagesse prévint l'assemblée divine : 'Kervens deviendra soit notre sauveur, soit notre destructeur. Son cœur décidera. L'amour ou la vengeance guideront son ascension.'"},
+    {title: "S2 Chapitre 18 – Le Test d'Apollon", text: "Le dieu du soleil, père d'Élodie, mit Kervens à l'épreuve pour déterminer ses véritables intentions. 'Montre-moi que tu mérites ma fille et que ta quête ne cache pas une soif de pouvoir destructrice.'"},
+    {title: "S2 Chapitre 19 – La Révélation Céleste", text: "Kervens découvrit que son ascension était prédite depuis longtemps dans des textes anciens, et qu'il était l'incarnation d'une prophétie annonçant soit le renouveau des dieux, soit leur crépuscule."},
+    {title: "S2 Chapitre 20 – Le Premier Miracle", text: "Kervens accomplit son premier acte véritablement divin en guérissant un village entier de la peste, sans utiliser les ténèbres mais par la pure énergie de sa volonté. Les villageois le virent alors comme un messie."},
+    {title: "S2 Chapitre 21 – La Jalousie d'Arès", text: "Le dieu de la guerre, voyant Kervens gagner en popularité parmi les mortels et l'affection d'Élodie, devint obsédé par sa destruction. Sa jalousie le poussa à concevoir un plan de plus en plus dangereux."},
+    {title: "S2 Chapitre 22 – Le Piège Céleste", text: "Arès tendit un piège à Kervens en simulant une attaque contre Élodie, espérant le pousser à commettre une erreur qui le discréditerait aux yeux des dieux et des mortels."},
+    {title: "S2 Chapitre 23 – La Tempête Emotionnelle", text: "Kervens, croyant Élodie en danger, libéra une tempête de ténèbres si puissante qu'elle menaça d'engloutir le monde. La frontière entre les royaumes faiblit sous la force de son émotion."},
+    {title: "S2 Chapitre 24 – L'Intervention d'Élodie", text: "Élodie calma la tempête avec sa lumière intérieure, prouvant que leur amour pouvait équilibrer leurs pouvoirs opposés. 'Nos différences nous rendent plus forts, Kervens,' murmura-t-elle."},
+    {title: "S2 Chapitre 25 – Le Conseil de Guerre", text: "Zeus ordonna la mobilisation totale des forces olympiennes contre Kervens, le considérant désormais comme une menace existentielle. 'Préparez-vous pour la guerre !' tonna-t-il."},
+    {title: "S2 Chapitre 26 – La Préparation Finale", text: "Kervens et Élodie se préparèrent pour l'affrontement inévitable, unissant leurs pouvoirs dans une symbiose parfaite. Leur connexion devenait leur plus grande force."},
+    {title: "S2 Chapitre 27 – L'Ultime Révélation", text: "Kervens découvrit qu'Élodie était la clé de son ascension divine - leur amour pouvait lui permettre de transcender sans perdre son humanité. 'Tu es mon équilibre,' lui avoua-t-il."},
+    {title: "S2 Chapitre 28 – Le Plan d'Arès", text: "Le dieu de la guerre mit au point un plan diabolique pour séparer les amants et détruire Kervens en le privant de sa source de lumière. 'Sans elle, il ne sera qu'ombre et poussière,' ricana-t-il."},
+    {title: "S2 Chapitre 29 – La Bataille des Cieux", text: "La guerre éclata entre les forces de Kervens et l'armée céleste. Le monde devint le champ de bataille de cette lutte épique, les éclairs divins déchirant le ciel."},
+    {title: "S2 Chapitre 30 – Le Sacrifice d'Élodie", text: "Pour sauver Kervens d'un coup fatal d'Arès, Élodie s'interposa et prit le coup destiné à son aimé. 'Vis,' souffla-t-elle en tombant, 'et souviens-toi de notre amour.'"},
+    {title: "S2 Chapitre 31 – La Mort de la Lumière", text: "Élodie mourut dans les bras de Kervens, ses derniers mots étant : 'N'oublie jamais qui tu es...' La lumière qui équilibrait ses ténèbres s'éteignit, plongeant son âme dans les ténèbres."},
+    {title: "S2 Chapitre 32 – Le Silence du Monde", text: "À la mort d'Élodie, le monde sembla retenir son souffle. Même les dieux furent frappés par la tragédie qu'ils avaient provoquée. Un silence funèbre s'abattit sur tous les royaumes."},
+    {title: "S2 Chapitre 33 – La Colère Absolue", text: "Kervens, transformé par la douleur, devint l'incarnation pure de la vengeance. Ses ténèbres engloutirent les cieux, obscurcissant le soleil et faisant trembler l'Olympe."},
+    {title: "S2 Chapitre 34 – Le Serment de Sang", text: "Tenant le corps sans vie d'Élodie, Kervens jura devant l'assemblée divine : 'Je détruirai chaque dieu, chaque divinité. Votre règne prend fin aujourd'hui. Votre sang lavera le sien.'"},
+    {title: "S2 Chapitre 35 – L'Ascension Définitive", text: "La douleur transforma Kervens en une entité nouvelle - ni dieu ni mortel, mais quelque chose de plus terrible : le jugement incarné. Sa puissance dépassa toute compréhension."},
+    {title: "S2 Chapitre 36 – La Première Victime", text: "Kervens traqua et tua Arès, le dieu de la guerre, démontrant pour la première fois qu'un dieu pouvait être vaincu. Le cri d'agonie d'Arès résonna dans tous les cieux."},
+    {title: "S2 Chapitre 37 – La Panique de l'Olympe", text: "La mort d'Arès sema la terreur parmi les dieux. Pour la première fois, ils connurent la peur de la mortalité. Certains commencèrent à fuir l'Olympe."},
+    {title: "S2 Chapitre 38 – L'Exil des Dieux", text: "Plusieurs dieux mineurs fuirent l'Olympe, préférant l'exil éternel à l'affrontement avec Kervens. L'ordre divin commençait à s'effondrer."},
+    {title: "S2 Chapitre 39 – Le Dernier Recours", text: "Zeus utilisa la foudre ultime, une arme capable de détruire des mondes, mais Kervens l'absorba sans difficulté. 'Tes éclairs ne sont que des étincelles,' murmura-t-il."},
+    {title: "S2 Chapitre 40 – La Chute de l'Olympe", text: "Kervens escalada le mont Olympe et défia Zeus en combat singulier, sous le regard horrifié des autres dieux. Le choc de leurs pouvoirs fit vaciller l'univers."},
+    {title: "S2 Chapitre 41 – Le Combat des Titans", text: "Le duel entre Kervens et Zeus ébranla les fondements de la réalité. Chaque coup faisait trembler l'univers, chaque échange de pouvoir redessinait le cosmos."},
+    {title: "S2 Chapitre 42 – La Révélation de Zeus", text: "Le roi des dieux, à genoux, révéla : 'Tu n'es pas le premier à défier les dieux, mais tu es le premier à le faire par amour. C'est ce qui te rend invincible.'"},
+    {title: "S2 Chapitre 43 – Le Prix de la Victoire", text: "Kervens vainquit Zeus mais refusa de le tuer, comprenant que la vengeance ne ramènerait pas Élodie. 'Je ne deviendrai pas ce que je déteste,' déclara-t-il."},
+    {title: "S2 Chapitre 44 – Le Nouvel Ordre", text: "Kervens imposa un nouveau pacte aux dieux : ils devaient servir l'humanité au lieu de la dominer. 'Soit vous apprenez l'humilité, soit vous disparaissez.'"},
+    {title: "S2 Chapitre 45 – Le Deuil Éternel", text: "Malgré sa victoire, Kervens errait seul dans son palais, hanté par le souvenir d'Élodie. La puissance divine était un piètre réconfort face à sa solitude."},
+    {title: "S2 Chapitre 46 – L'Héritage d'Élodie", text: "Kervens découvrit qu'Élodie lui avait laissé un message caché : 'Construis un monde où l'amour triomphe de la puissance. Sois le gardien que j'ai toujours su que tu étais.'"},
+    {title: "S2 Chapitre 47 – La Reconstruction", text: "Kervens utilisa ses pouvoirs pour reconstruire ce qui avait été détruit pendant la guerre, honorant la mémoire d'Élodie en créant un monde plus juste."},
+    {title: "S2 Chapitre 48 – Le Roi-Dieu", text: "Kervens devint le pont entre les dieux et les hommes, refusant de vivre dans l'Olympe pour rester parmi les mortels qu'il avait juré de protéger."},
+    {title: "S2 Chapitre 49 – La Légende Éternelle", text: "L'histoire de Kervens et Élodie devint une légende, inspirant l'amour et l'espoir à travers les âges. Leur sacrifice enseignait que l'amour véritable transcende même la divinité."},
+    {title: "S2 Chapitre 50 – L'Éternité Recommence", text: "Kervens régna pendant des millénaires, guidant l'humanité avec sagesse. Chaque printemps, une fleur unique poussait sur la tombe d'Élodie, rappel au monde que l'amour est plus fort que la mort et que même les dieux ne peuvent briser un cœur véritable. Le roi des ténèbres était devenu le gardien de la lumière, et son histoire d'amour devint l'étoile qui guide les cœurs perdus."}
+];
+
+let currentSeason2Chapter = 0;
+
+// FONCTIONS SAISON 2
+function showSeason2Chapter(index) {
+    const chapter = season2Chapters[index];
+    document.getElementById('season2ChapterTitle').textContent = chapter.title;
+    document.getElementById('season2ChapterText').textContent = chapter.text;
+    document.getElementById('season2ChapterCounter').textContent = `Chapitre ${index + 1} sur ${season2Chapters.length}`;
+    
+    // Mise à jour des boutons
+    const prevButton = document.querySelector('button[onclick="prevSeason2Chapter()"]');
+    const nextButton = document.querySelector('button[onclick="nextSeason2Chapter()"]');
+    
+    prevButton.disabled = (index === 0);
+    nextButton.disabled = (index === season2Chapters.length - 1);
+    
+    // Effet visuel
+    document.getElementById('season2').style.animation = 'none';
+    setTimeout(() => {
+        document.getElementById('season2').style.animation = 'fadeIn 1.5s ease-in-out';
+    }, 10);
+}
+
+function nextSeason2Chapter() {
+    if (currentSeason2Chapter < season2Chapters.length - 1) {
+        currentSeason2Chapter++;
+        showSeason2Chapter(currentSeason2Chapter);
+    }
+}
+
+function prevSeason2Chapter() {
+    if (currentSeason2Chapter > 0) {
+        currentSeason2Chapter--;
+        showSeason2Chapter(currentSeason2Chapter);
+    }
+}
+
+function returnToMenu() {
+    document.getElementById('season2').style.display = 'none';
+    document.getElementById('welcome').style.display = 'block';
+    document.getElementById('backgroundMusic').pause();
+    
+    // Supprime le contrôle de musique
+    const musicControl = document.querySelector('.music-control');
+    if (musicControl) {
+        musicControl.remove();
+    }
+}
+
+function createMusicControl() {
+    // Vérifie si le contrôle existe déjà
+    if (document.querySelector('.music-control')) return;
+    
+    const musicControl = document.createElement('button');
+    musicControl.className = 'music-control';
+    musicControl.innerHTML = '🎵';
+    musicControl.title = 'Musique On/Off';
+    musicControl.onclick = toggleMusic;
+    document.body.appendChild(musicControl);
+}
+
+function toggleMusic() {
+    const music = document.getElementById('backgroundMusic');
+    const musicControl = document.querySelector('.music-control');
+    
+    if (music.paused) {
+        music.play();
+        musicControl.innerHTML = '🎵';
+        musicControl.style.background = 'rgba(255, 0, 0, 0.7)';
+    } else {
+        music.pause();
+        musicControl.innerHTML = '🔇';
+        musicControl.style.background = 'rgba(100, 100, 100, 0.7)';
+    }
+}
+
+// Navigation au clavier pour la saison 2
+document.addEventListener('keydown', function(event) {
+    if (document.getElementById('season2').style.display === 'block') {
+        if (event.key === 'ArrowRight' || event.key === ' ') {
+            nextSeason2Chapter();
+        } else if (event.key === 'ArrowLeft') {
+            prevSeason2Chapter();
+        }
+    }
 });
 </script>
 </body>
-  </html>
+</html>
